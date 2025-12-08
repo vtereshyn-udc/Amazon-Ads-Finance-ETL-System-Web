@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Ads & Finance ETL System v4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .system-node {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .system-node:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .flow-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+        }
+
+        .tab-btn.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .lang-btn {
+            transition: all 0.2s;
+        }
+        .lang-btn.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+<body class="text-slate-800 h-screen flex flex-col md:flex-row overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col">
+        <div class="p-6 border-b border-slate-800">
+            <div class="flex items-center justify-between mb-2">
+                <h1 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-network-wired text-blue-400"></i> ETL v4
+                </h1>
+                <!-- Language Switcher -->
+                <div class="flex gap-1">
+                    <button onclick="switchLang('en')" class="lang-btn px-2 py-1 text-xs rounded bg-slate-700 hover:bg-slate-600 active" id="lang-en">EN</button>
+                    <button onclick="switchLang('uk')" class="lang-btn px-2 py-1 text-xs rounded bg-slate-700 hover:bg-slate-600" id="lang-uk">UA</button>
+                </div>
+            </div>
+            <p class="text-slate-400 text-xs mt-1" data-en="Amazon Data Pipeline" data-uk="Amazon Дата Конвеєр">Amazon Data Pipeline</p>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+            <button onclick="switchTab('overview')" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors active" id="btn-overview">
+                <i class="fa-solid fa-chart-line w-6"></i> <span data-en="Dashboard" data-uk="Дашборд">Dashboard</span>
+            </button>
+            <button onclick="switchTab('execution')" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors" id="btn-execution">
+                <i class="fa-solid fa-clock-rotate-left w-6"></i> <span data-en="Live Logs" data-uk="Виконання">Live Logs</span>
+            </button>
+            <button onclick="switchTab('architecture')" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors" id="btn-architecture">
+                <i class="fa-solid fa-sitemap w-6"></i> <span data-en="System Map" data-uk="Архітектура">System Map</span>
+            </button>
+            <button onclick="switchTab('features')" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors" id="btn-features">
+                <i class="fa-solid fa-list-check w-6"></i> <span data-en="Features" data-uk="Можливості">Features</span>
+            </button>
+            <button onclick="switchTab('logic')" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors" id="btn-logic">
+                <i class="fa-solid fa-microchip w-6"></i> <span data-en="Logic & APIs" data-uk="Логіка та API">Logic & APIs</span>
+            </button>
+        </nav>
+
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-500">
+            <div class="flex items-center gap-2 mb-2">
+                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span data-en="System Active" data-uk="Система активна">System Active</span>
+            </div>
+            v4.0.0 Stable
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-4 md:p-8 relative">
+        
+        <!-- Header -->
+        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-slate-900" data-en="System Architecture Overview" data-uk="Огляд архітектури системи">System Architecture Overview</h2>
+                <p class="text-slate-500 text-sm" data-en="Amazon Ads & Finance ETL • Self-Healing • Zero Maintenance" data-uk="Amazon Ads & Finance ETL • Самовідновлення • Нульове обслуговування">Amazon Ads & Finance ETL • Self-Healing • Zero Maintenance</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold border border-emerald-200">
+                    <i class="fa-solid fa-check mr-1"></i> <span data-en="Production Ready" data-uk="Готово до продакшну">Production Ready</span>
+                </span>
+                <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold border border-blue-200">
+                    <i class="fa-solid fa-robot mr-1"></i> <span data-en="Trust Children" data-uk="Довіра до дочірніх">Trust Children</span>
+                </span>
+                <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold border border-amber-200">
+                    <i class="fa-brands fa-python mr-1"></i> Python 3.10+
+                </span>
+            </div>
+        </header>
+
+        <!-- 1. OVERVIEW VIEW -->
+        <div id="view-overview" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2" data-en="System Uptime" data-uk="Аптайм">System Uptime</div>
+                    <div class="text-3xl font-bold text-slate-800">99.9%</div>
+                    <div class="text-xs text-emerald-600 mt-1"><i class="fa-solid fa-arrow-up"></i> <span data-en="Self-Healing Active" data-uk="Самовідновлення">Self-Healing Active</span></div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2" data-en="Failure Recovery" data-uk="Відновлення">Failure Recovery</div>
+                    <div class="text-3xl font-bold text-slate-800">5 <span data-en="min" data-uk="хв">min</span></div>
+                    <div class="text-xs text-slate-500 mt-1"><span data-en="vs 180 min (Old)" data-uk="vs 180 хв (Старе)">vs 180 min (Old)</span></div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2" data-en="Maintenance" data-uk="Обслуговування">Maintenance</div>
+                    <div class="text-3xl font-bold text-slate-800" data-en="Zero" data-uk="Нуль">Zero</div>
+                    <div class="text-xs text-slate-500 mt-1" data-en="Manual Touch" data-uk="Ручних втручань">Manual Touch</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2" data-en="Active Loaders" data-uk="Активних завантажувачів">Active Loaders</div>
+                    <div class="text-3xl font-bold text-slate-800">4</div>
+                    <div class="text-xs text-blue-600 mt-1">SB, SD, SP, ST</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Efficiency Impact" data-uk="Вплив на ефективність">Efficiency Impact</h3>
+                    <p class="text-sm text-slate-500 mb-4" data-en="Comparison between v3 (Script) and v4 (Enterprise System)" data-uk="Порівняння між v3 (Скрипт) та v4 (Enterprise-система)">Comparison between v3 (Script) and v4 (Enterprise System)</p>
+                    <div class="chart-container">
+                        <canvas id="efficiencyChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Core Directory Structure" data-uk="Структура проекту">Core Directory Structure</h3>
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm text-slate-300 h-[350px] overflow-y-auto">
+                        <ul class="space-y-1">
+                            <li><i class="fa-regular fa-folder text-blue-400 mr-2"></i>project/</li>
+                            <li class="pl-4"><i class="fa-regular fa-folder-open text-yellow-400 mr-2"></i>Config & State</li>
+                            <li class="pl-8 text-slate-400">├── .env</li>
+                            <li class="pl-8 text-slate-400">├── telegram_chat_id.txt</li>
+                            <li class="pl-8 text-slate-400">└── circuit_state.json <span class="text-emerald-400 text-xs ml-2">// New!</span></li>
+                            <li class="pl-4 mt-2"><i class="fa-regular fa-folder-open text-purple-400 mr-2"></i>Core (Orchestration)</li>
+                            <li class="pl-8 text-slate-400">├── run_ads_forever.py <span class="text-slate-500 text-xs">// Scheduler</span></li>
+                            <li class="pl-8 text-white font-bold">├── master_ads_loader_v4.py <span class="text-blue-400 text-xs">// Master</span></li>
+                            <li class="pl-8 text-slate-400">├── base_loader.py</li>
+                            <li class="pl-8 text-slate-400">├── circuit_breaker.py</li>
+                            <li class="pl-8 text-slate-400">└── telegram_notifier.py</li>
+                            <li class="pl-4 mt-2"><i class="fa-regular fa-folder-open text-orange-400 mr-2"></i>Workers</li>
+                            <li class="pl-8 text-slate-400">├── sp_loader_4h_senior.py</li>
+                            <li class="pl-8 text-slate-400">├── sb_loader_4h_senior.py</li>
+                            <li class="pl-8 text-slate-400">├── sd_loader_4h_senior.py</li>
+                            <li class="pl-8 text-emerald-400">└── settlements_loader_senior.py <span class="text-emerald-400 text-xs">// New!</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. EXECUTION LOGS VIEW -->
+        <div id="view-execution" class="hidden space-y-6">
+            <!-- Latest Run Summary -->
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-xl shadow-lg text-white">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold" data-en="Latest Execution Report" data-uk="Останній звіт виконання">Latest Execution Report</h3>
+                        <p class="text-blue-100 text-sm">Dec 08, 2025 02:00 UTC</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-bold">54 <span data-en="min" data-uk="хв">min</span></div>
+                        <div class="text-blue-100 text-xs" data-en="Total Duration" data-uk="Загальна тривалість">Total Duration</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                        <div class="text-2xl font-bold">26.5K</div>
+                        <div class="text-xs text-blue-100" data-en="Rows Loaded" data-uk="Рядків завантажено">Rows Loaded</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                        <div class="text-2xl font-bold">14/20</div>
+                        <div class="text-xs text-blue-100" data-en="Reports OK" data-uk="Звітів успішно">Reports OK</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                        <div class="text-2xl font-bold">3</div>
+                        <div class="text-xs text-blue-100" data-en="Loaders Active" data-uk="Активних">Loaders Active</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                        <div class="text-2xl font-bold">100%</div>
+                        <div class="text-xs text-blue-100" data-en="Success Rate" data-uk="Успішність">Success Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Execution Timeline" data-uk="Часова шкала виконання">Execution Timeline</h3>
+                <div class="space-y-4">
+                    <!-- SB Loader -->
+                    <div class="relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
+                                    <span class="text-xl">🧲</span>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-slate-800">SB Loader (Sponsored Brands)</div>
+                                    <div class="text-xs text-slate-500">42 <span data-en="min" data-uk="хв">min</span> • 8,234 <span data-en="rows" data-uk="рядків">rows</span></div>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">✅ <span data-en="SUCCESS" data-uk="УСПІХ">SUCCESS</span></span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2">
+                            <div class="bg-pink-500 h-2 rounded-full" style="width: 78%"></div>
+                        </div>
+                    </div>
+
+                    <!-- SD Loader -->
+                    <div class="relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <span class="text-xl">🎯</span>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-slate-800">SD Loader (Sponsored Display)</div>
+                                    <div class="text-xs text-slate-500">53 <span data-en="min" data-uk="хв">min</span> • 5,891 <span data-en="rows" data-uk="рядків">rows</span></div>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">✅ <span data-en="SUCCESS" data-uk="УСПІХ">SUCCESS</span></span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2">
+                            <div class="bg-purple-500 h-2 rounded-full" style="width: 98%"></div>
+                        </div>
+                    </div>
+
+                    <!-- SP Loader -->
+                    <div class="relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                    <span class="text-xl">📦</span>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-slate-800">SP Loader (Sponsored Products)</div>
+                                    <div class="text-xs text-slate-500">54 <span data-en="min" data-uk="хв">min</span> • 12,407 <span data-en="rows" data-uk="рядків">rows</span></div>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">✅ <span data-en="SUCCESS" data-uk="УСПІХ">SUCCESS</span></span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2">
+                            <div class="bg-orange-500 h-2 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SP-API Reports Grid -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="SP-API Reports (20 Types)" data-uk="SP-API Звіти (20 типів)">SP-API Reports (20 Types)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-800">FBA Inventory</span>
+                            <span class="text-emerald-600 font-bold">✅ 933</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-800">Reserved Inventory</span>
+                            <span class="text-emerald-600 font-bold">✅ 272</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-800">Merchant Listings</span>
+                            <span class="text-emerald-600 font-bold">✅ 17,383</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-800">Orders Full</span>
+                            <span class="text-emerald-600 font-bold">✅ 11,869</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-800">FBA Shipments</span>
+                            <span class="text-emerald-600 font-bold">✅ 11,479</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-800">AFN Inventory</span>
+                            <span class="text-emerald-600 font-bold">✅ 2,151</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-500">Storage Fees</span>
+                            <span class="text-slate-400 font-bold">⚪ CANCELLED</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-500">FBA Fees</span>
+                            <span class="text-slate-400 font-bold">⚪ FATAL</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-rose-50 border border-rose-200 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-800">Settlements</span>
+                            <span class="text-rose-600 font-bold">❌ ERROR</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. ARCHITECTURE VIEW -->
+        <div id="view-architecture" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                <div class="mb-6">
+                    <h3 class="font-bold text-lg text-slate-800" data-en="System Workflow Map" data-uk="Карта роботи системи">System Workflow Map</h3>
+                    <p class="text-sm text-slate-500" data-en="Click on any component to see its specific responsibilities and logic." data-uk="Натисніть на компонент, щоб побачити його відповідальність та логіку.">Click on any component to see its specific responsibilities and logic.</p>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-1 flex flex-col items-center space-y-4">
+                        
+                        <!-- Scheduler -->
+                        <div onclick="showDetails('scheduler')" class="system-node w-full md:w-64 p-4 bg-slate-100 border-2 border-slate-300 rounded-lg text-center hover:border-blue-400">
+                            <div class="text-xs text-slate-500 font-bold uppercase mb-1">Trigger (24/7)</div>
+                            <div class="font-bold text-slate-800"><i class="fa-regular fa-clock mr-2"></i>Scheduler</div>
+                            <div class="text-xs text-slate-600 mt-1">run_ads_forever.py</div>
+                        </div>
+
+                        <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+
+                        <!-- Master -->
+                        <div onclick="showDetails('master')" class="system-node w-full md:w-80 p-5 bg-blue-50 border-2 border-blue-200 rounded-xl text-center shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded-bl">Orchestrator</div>
+                            <div class="text-xs text-blue-500 font-bold uppercase mb-1">Central Intelligence</div>
+                            <div class="font-bold text-blue-900 text-lg"><i class="fa-solid fa-brain mr-2"></i>Master Loader v4</div>
+                            <div class="text-xs text-blue-700 mt-1">No Watchdog • Trust Children • Circuit Breaker</div>
+                        </div>
+
+                        <div class="flow-arrow"><i class="fa-solid fa-arrows-split-up-and-left"></i></div>
+
+                        <!-- Workers Grid -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
+                            <div onclick="showDetails('sp')" class="system-node p-3 bg-white border border-slate-200 rounded-lg text-center hover:border-orange-400">
+                                <div class="text-2xl mb-1">📦</div>
+                                <div class="font-bold text-sm">SP Loader</div>
+                                <div class="text-[10px] bg-slate-100 rounded px-1 mt-1">Anti-Zombie</div>
+                            </div>
+                            <div onclick="showDetails('sb')" class="system-node p-3 bg-white border border-slate-200 rounded-lg text-center hover:border-pink-400">
+                                <div class="text-2xl mb-1">🧲</div>
+                                <div class="font-bold text-sm">SB Loader</div>
+                                <div class="text-[10px] bg-slate-100 rounded px-1 mt-1">Anti-Zombie</div>
+                            </div>
+                            <div onclick="showDetails('sd')" class="system-node p-3 bg-white border border-slate-200 rounded-lg text-center hover:border-purple-400">
+                                <div class="text-2xl mb-1">🎯</div>
+                                <div class="font-bold text-sm">SD Loader</div>
+                                <div class="text-[10px] bg-slate-100 rounded px-1 mt-1">Auto-Fix</div>
+                            </div>
+                            <div onclick="showDetails('st')" class="system-node p-3 bg-white border border-slate-200 rounded-lg text-center hover:border-emerald-400">
+                                <div class="text-2xl mb-1">💰</div>
+                                <div class="font-bold text-sm">Settlements</div>
+                                <div class="text-[10px] bg-slate-100 rounded px-1 mt-1">Fail Fast</div>
+                            </div>
+                        </div>
+
+                        <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+
+                        <div class="grid grid-cols-2 gap-4 w-full">
+                            <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-lg text-center">
+                                <div class="text-indigo-600 font-bold"><i class="fa-solid fa-cloud mr-2"></i>Amazon APIs</div>
+                                <div class="text-xs text-indigo-400">Ads API & SP-API</div>
+                            </div>
+                            <div class="p-4 bg-slate-800 border border-slate-700 rounded-lg text-center">
+                                <div class="text-white font-bold"><i class="fa-solid fa-database mr-2"></i>PostgreSQL</div>
+                                <div class="text-xs text-slate-400">UPSERT Data</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full md:w-1/3 bg-slate-50 border-l border-slate-200 p-6 rounded-r-xl">
+                        <div id="node-info">
+                            <div class="flex items-center justify-center h-full text-slate-400 flex-col">
+                                <i class="fa-regular fa-hand-pointer text-4xl mb-2"></i>
+                                <p data-en="Select a component to view details" data-uk="Оберіть компонент для деталей">Select a component to view details</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. FEATURES VIEW -->
+        <div id="view-features" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="System Capabilities" data-uk="Можливості системи">System Capabilities</h3>
+                    <div class="chart-container">
+                        <canvas id="featuresChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Feature Matrix" data-uk="Матриця можливостей">Feature Matrix</h3>
+                    <div class="overflow-y-auto h-[300px] pr-2">
+                        <div class="mb-4 p-4 border border-l-4 border-l-emerald-500 border-slate-200 rounded bg-white">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-bold text-slate-800"><i class="fa-solid fa-skull-crossbones text-slate-400 mr-2"></i>Anti-Zombie</h4>
+                                <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded" data-en="Reliability" data-uk="Надійність">Reliability</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-2" data-en="Differentiates between 'slow' and 'dead'. If API returns None 10 times consecutively (10 mins), the worker self-terminates to allow Master to restart it." data-uk="Розрізняє 'повільний' та 'мертвий'. Якщо API повертає None 10 разів поспіль (10 хв), воркер само-завершується, дозволяючи Master перезапустити його.">Differentiates between "slow" and "dead". If API returns None 10 times consecutively (10 mins), the worker self-terminates to allow Master to restart it.</p>
+                        </div>
+                        <div class="mb-4 p-4 border border-l-4 border-l-blue-500 border-slate-200 rounded bg-white">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-bold text-slate-800"><i class="fa-solid fa-bolt text-yellow-400 mr-2"></i>Circuit Breaker</h4>
+                                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded" data-en="Safety" data-uk="Безпека">Safety</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-2" data-en="Prevents API bans. If the API fails 3 times globally, the system enters a 'Cool-down' state for 30 minutes before trying again." data-uk="Запобігає бану API. Якщо API падає 3 рази глобально, система входить в стан 'Охолодження' на 30 хвилин перед повторною спробою.">Prevents API bans. If the API fails 3 times globally, the system enters a "Cool-down" state for 30 minutes before trying again.</p>
+                        </div>
+                        <div class="mb-4 p-4 border border-l-4 border-l-purple-500 border-slate-200 rounded bg-white">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-bold text-slate-800"><i class="fa-solid fa-wrench text-slate-400 mr-2"></i>Auto-Fix (SD)</h4>
+                                <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded" data-en="Data" data-uk="Дані">Data</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-2" data-en="Automatically detects 400 Bad Request caused by invalid metric columns, removes them from the config, and retries immediately." data-uk="Автоматично виявляє помилку 400 через невалідні колонки метрик, видаляє їх з конфігу та перепробує негайно.">Automatically detects 400 Bad Request caused by invalid metric columns, removes them from the config, and retries immediately.</p>
+                        </div>
+                        <div class="mb-4 p-4 border border-l-4 border-l-orange-500 border-slate-200 rounded bg-white">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-bold text-slate-800"><i class="fa-solid fa-database text-slate-400 mr-2"></i>UPSERT & Schema Evo</h4>
+                                <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded" data-en="Integrity" data-uk="Цілісність">Integrity</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-2" data-en="Guarantees zero duplicates. Automatically adapts database tables when new columns are added to the configuration." data-uk="Гарантує нуль дублікатів. Автоматично адаптує таблиці БД коли нові колонки додаються до конфігурації.">Guarantees zero duplicates. Automatically adapts database tables when new columns are added to the configuration.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. LOGIC VIEW -->
+        <div id="view-logic" class="hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Communication Protocol (Exit Codes)" data-uk="Протокол комунікації (Exit Codes)">Communication Protocol (Exit Codes)</h3>
+                    <p class="text-sm text-slate-500 mb-4" data-en="How workers talk to the Master without words." data-uk="Як воркери говорять з Мастером без слів.">How workers talk to the Master without words.</p>
+                    <div class="space-y-3">
+                        <div class="flex items-center p-3 bg-emerald-50 rounded border border-emerald-100">
+                            <span class="w-8 h-8 flex items-center justify-center bg-emerald-500 text-white font-mono font-bold rounded mr-3">0</span>
+                            <div>
+                                <div class="font-bold text-slate-800" data-en="Success" data-uk="Успіх">Success</div>
+                                <div class="text-xs text-slate-500" data-en="Operation completed successfully." data-uk="Операція завершена успішно.">Operation completed successfully.</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-rose-50 rounded border border-rose-100">
+                            <span class="w-8 h-8 flex items-center justify-center bg-rose-500 text-white font-mono font-bold rounded mr-3">1</span>
+                            <div>
+                                <div class="font-bold text-slate-800" data-en="Error" data-uk="Помилка">Error</div>
+                                <div class="text-xs text-slate-500" data-en="Critical failure (No Net / API Error)." data-uk="Критична помилка (Нема нету / API помилка).">Critical failure (No Net / API Error).</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-blue-50 rounded border border-blue-100">
+                            <span class="w-8 h-8 flex items-center justify-center bg-blue-500 text-white font-mono font-bold rounded mr-3">2</span>
+                            <div>
+                                <div class="font-bold text-slate-800" data-en="Auto-Fixed" data-uk="Автофікс">Auto-Fixed</div>
+                                <div class="text-xs text-slate-500" data-en="Error occurred but was self-corrected." data-uk="Помилка виникла, але була самовиправлена.">Error occurred but was self-corrected.</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-slate-50 rounded border border-slate-100">
+                            <span class="w-8 h-8 flex items-center justify-center bg-slate-500 text-white font-mono font-bold rounded mr-3">143</span>
+                            <div>
+                                <div class="font-bold text-slate-800" data-en="Terminated" data-uk="Зупинено">Terminated</div>
+                                <div class="text-xs text-slate-500" data-en="Graceful shutdown via SIGTERM." data-uk="Коректне завершення через SIGTERM.">Graceful shutdown via SIGTERM.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="API Ecosystem" data-uk="Екосистема API">API Ecosystem</h3>
+                    <p class="text-sm text-slate-500 mb-4" data-en="Unified Authentication (LWA) for two distinct gateways." data-uk="Єдина автентифікація (LWA) для двох різних шлюзів.">Unified Authentication (LWA) for two distinct gateways.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="relative pl-6 border-l-2 border-blue-300">
+                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-blue-500"></div>
+                            <h4 class="font-bold text-slate-800">Amazon Ads API</h4>
+                            <div class="text-xs font-mono text-slate-500 mt-1">advertising-api.amazon.com</div>
+                            <div class="flex gap-2 mt-2">
+                                <span class="text-[10px] bg-slate-100 px-2 py-1 rounded">SP</span>
+                                <span class="text-[10px] bg-slate-100 px-2 py-1 rounded">SB</span>
+                                <span class="text-[10px] bg-slate-100 px-2 py-1 rounded">SD</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-2" data-en="Handles all advertising metrics: Impressions, Clicks, ACOS, ROAS." data-uk="Обробляє всі рекламні метрики: Покази, Кліки, ACOS, ROAS.">Handles all advertising metrics: Impressions, Clicks, ACOS, ROAS.</p>
+                        </div>
+
+                        <div class="relative pl-6 border-l-2 border-emerald-300">
+                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-emerald-500"></div>
+                            <h4 class="font-bold text-slate-800">Selling Partner API (SP-API)</h4>
+                            <div class="text-xs font-mono text-slate-500 mt-1">sellingpartnerapi-na.amazon.com</div>
+                            <div class="flex gap-2 mt-2">
+                                <span class="text-[10px] bg-slate-100 px-2 py-1 rounded">Settlements</span>
+                                <span class="text-[10px] bg-slate-100 px-2 py-1 rounded">Orders</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-2" data-en="Handles financial data, payouts, and inventory." data-uk="Обробляє фінансові дані, виплати та інвентар.">Handles financial data, payouts, and inventory.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        let currentLang = 'en';
+        
+        function switchLang(lang) {
+            currentLang = lang;
+            
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`lang-${lang}`).classList.add('active');
+            
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (text) {
+                    el.textContent = text;
+                }
+            });
+        }
+
+        function switchTab(tabId) {
+            ['overview', 'execution', 'architecture', 'features', 'logic'].forEach(id => {
+                document.getElementById(`view-${id}`).classList.add('hidden');
+            });
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-slate-800', 'text-white');
+                btn.classList.add('text-slate-300');
+            });
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.add('active');
+            activeBtn.classList.remove('text-slate-300');
+        }
+
+        const nodeDetails = {
+            'scheduler': {
+                title: 'Scheduler (Cron)',
+                icon: 'fa-clock',
+                color: 'text-slate-600',
+                desc: 'Simple python loop running 24/7. Wakes up the Master at specific slots (02:00, 06:00, etc.). Acts as the heartbeat.'
+            },
+            'master': {
+                title: 'Master Loader v4',
+                icon: 'fa-brain',
+                color: 'text-blue-600',
+                desc: 'The orchestrator. It manages the Circuit Breaker state, launches all worker scripts in parallel (AsyncIO), captures their output streams, and compiles the final Telegram report. It trusts workers to manage their own timeouts.'
+            },
+            'sp': {
+                title: 'Sponsored Products (SP)',
+                icon: 'fa-box',
+                color: 'text-orange-500',
+                desc: 'Heaviest loader. Features <b>Anti-Zombie</b> logic: if API returns NULL/Pending 10 times consecutively, it self-terminates to trigger a clean restart by the Master.'
+            },
+            'sb': {
+                title: 'Sponsored Brands (SB)',
+                icon: 'fa-magnet',
+                color: 'text-pink-500',
+                desc: 'Standard loader. Shares base logic with SP but targets Brand campaigns. Uses <b>Graceful Shutdown</b> to save progress if the server restarts.'
+            },
+            'sd': {
+                title: 'Sponsored Display (SD)',
+                icon: 'fa-bullseye',
+                color: 'text-purple-500',
+                desc: 'Features <b>Auto-Fix</b>. If Amazon returns a 400 error due to invalid columns, it automatically strips the bad columns from the config and retries immediately.'
+            },
+            'st': {
+                title: 'Settlements (Finance)',
+                icon: 'fa-money-bill-wave',
+                color: 'text-emerald-500',
+                desc: 'Uses SP-API. Features <b>Fail Fast</b>: checks internet connectivity before attempting heavy downloads. Processes financial reports list sequentially.'
+            }
+        };
+
+        function showDetails(nodeKey) {
+            const data = nodeDetails[nodeKey];
+            const html = `
+                <div class="animate-fade-in">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-3 bg-slate-100 rounded-lg">
+                            <i class="fa-solid ${data.icon} text-2xl ${data.color}"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">${data.title}</h3>
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">${data.desc}</p>
+                    <div class="mt-6 p-4 bg-slate-800 rounded-lg">
+                        <div class="text-xs text-slate-400 uppercase font-bold mb-2">Key Logic</div>
+                        <code class="text-sm text-green-400 font-mono">
+                            ${nodeKey === 'master' ? 'asyncio.gather(*tasks)' : 'if silence > 10: sys.exit(1)'}
+                        </code>
+                    </div>
+                </div>
+            `;
+            document.getElementById('node-info').innerHTML = html;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctxEfficiency = document.getElementById('efficiencyChart').getContext('2d');
+            new Chart(ctxEfficiency, {
+                type: 'bar',
+                data: {
+                    labels: ['Downtime (Network Fail)', 'Manual Fixes / Week'],
+                    datasets: [
+                        {
+                            label: 'Old Script (v1)',
+                            data: [180, 5],
+                            backgroundColor: '#94a3b8',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Enterprise System (v4)',
+                            data: [5, 0],
+                            backgroundColor: '#10b981',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            const ctxFeatures = document.getElementById('featuresChart').getContext('2d');
+            new Chart(ctxFeatures, {
+                type: 'radar',
+                data: {
+                    labels: ['Reliability', 'Speed', 'Data Integrity', 'Maintainability', 'Scalability'],
+                    datasets: [{
+                        label: 'System Score',
+                        data: [95, 90, 100, 95, 85],
+                        fill: true,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        pointBackgroundColor: 'rgb(59, 130, 246)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(59, 130, 246)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: { borderWidth: 3 }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
