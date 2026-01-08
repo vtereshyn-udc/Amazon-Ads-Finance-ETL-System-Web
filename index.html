@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amazon ETL System v5</title>
+    <title>Amazon ETL System v5.6 Live</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,18 +13,28 @@
         .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 280px; }
         .tab-btn.active { background-color: #3b82f6; color: white; }
         .lang-btn.active { background-color: #3b82f6; color: white; }
-        .telegram-msg { font-family: -apple-system, sans-serif; background: #1e2a38; border-radius: 12px; padding: 12px 16px; max-width: 320px; }
+        .telegram-msg { font-family: -apple-system, sans-serif; background: #1e2a38; border-radius: 12px; padding: 12px 16px; max-width: 320px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .schedule-item:hover { transform: translateX(4px); background: rgba(59, 130, 246, 0.1); }
+        /* Syntax highlighting mock */
+        .code-kw { color: #c678dd; } 
+        .code-func { color: #61afef; } 
+        .code-str { color: #98c379; } 
+        .code-comment { color: #5c6370; font-style: italic; }
+        
+        /* Custom Scrollbar for Log */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="text-slate-800 h-screen flex flex-col md:flex-row overflow-hidden bg-slate-50">
 
-    <!-- Sidebar -->
     <aside class="w-full md:w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col">
         <div class="p-6 border-b border-slate-800">
             <div class="flex items-center justify-between mb-2">
                 <h1 class="text-xl font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-network-wired text-blue-400"></i> ETL v5
+                    <i class="fa-solid fa-network-wired text-blue-400"></i> ETL v5.6
                 </h1>
                 <div class="flex gap-1">
                     <button onclick="switchLang('en')" class="lang-btn px-2 py-1 text-xs rounded bg-slate-700 hover:bg-slate-600 active" id="lang-en">EN</button>
@@ -59,19 +69,18 @@
             </div>
             <div class="flex items-center gap-2">
                 <i class="fa-brands fa-telegram text-blue-400"></i>
-                <span>2 <span data-en="subscribers" data-uk="підписників">subscribers</span></span>
+                <span>Bot v3.5 <span data-en="Active" data-uk="Активний">Active</span></span>
             </div>
-            <div class="mt-2 text-slate-600">v5.0.0 Unified</div>
+            <div class="mt-2 text-slate-600">v5.6.0 Live Monitor</div>
         </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="flex-1 overflow-y-auto p-4 md:p-8">
         
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-slate-900" data-en="Unified ETL System" data-uk="Єдина ETL Система">Unified ETL System</h2>
-                <p class="text-slate-500 text-sm" data-en="Amazon Ads + SP-API • Self-Healing • Zero Maintenance" data-uk="Amazon Ads + SP-API • Самовідновлення • Обслуговування">Amazon Ads + SP-API • Self-Healing • Zero Maintenance</p>
+                <p class="text-slate-500 text-sm" data-en="Amazon Ads + SP-API (Orders/Finance) • Self-Healing" data-uk="Amazon Ads + SP-API (Orders/Finance) • Самовідновлення">Amazon Ads + SP-API (Orders/Finance) • Self-Healing</p>
             </div>
             <div class="flex flex-wrap gap-2">
                 <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold"><i class="fa-solid fa-check mr-1"></i> <span data-en="Production" data-uk="Продакшн">Production</span></span>
@@ -79,87 +88,174 @@
             </div>
         </header>
 
-        <!-- 1. DASHBOARD -->
         <div id="view-overview" class="space-y-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <div class="text-slate-400 text-xs font-bold uppercase mb-2" data-en="Daily Syncs" data-uk="Синхронізацій">Daily Syncs</div>
-                    <div class="text-3xl font-bold text-slate-800">11</div>
-                    <div class="text-xs text-slate-500 mt-1">5 ADS + 6 SP-API</div>
+                    <div class="text-slate-400 text-xs font-bold uppercase mb-2" data-en="Total Rows (Today)" data-uk="Рядків (Сьогодні)">Total Rows (Today)</div>
+                    <div class="text-3xl font-bold text-slate-800">83,700</div>
+                    <div class="text-xs text-emerald-600 mt-1">▲ 12% vs avg</div>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <div class="text-slate-400 text-xs font-bold uppercase mb-2" data-en="Reports" data-uk="Звітів">Reports</div>
-                    <div class="text-3xl font-bold text-slate-800">30+</div>
-                    <div class="text-xs text-slate-500 mt-1" data-en="Types" data-uk="Типів">Types</div>
+                    <div class="text-slate-400 text-xs font-bold uppercase mb-2" data-en="API Quota Usage" data-uk="Використання квоти API">API Quota Usage</div>
+                    <div class="text-3xl font-bold text-blue-600">14%</div>
+                    <div class="text-xs text-slate-500 mt-1" data-en="Safe Zone" data-uk="Безпечна зона">Safe Zone</div>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <div class="text-slate-400 text-xs font-bold uppercase mb-2" data-en="Uptime" data-uk="Аптайм">Uptime</div>
+                    <div class="text-slate-400 text-xs font-bold uppercase mb-2" data-en="Success Rate" data-uk="Успішність">Success Rate</div>
                     <div class="text-3xl font-bold text-emerald-600">99.9%</div>
-                    <div class="text-xs text-emerald-600 mt-1" data-en="Self-Healing" data-uk="Самовідновлення">Self-Healing</div>
+                    <div class="text-xs text-slate-500 mt-1" data-en="Last 30 days" data-uk="За 30 днів">Last 30 days</div>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <div class="text-slate-400 text-xs font-bold uppercase mb-2" data-en="Alerts" data-uk="Сповіщення">Alerts</div>
-                    <div class="text-3xl font-bold text-slate-800" data-en="Silent" data-uk="Тиша">Silent</div>
-                    <div class="text-xs text-emerald-600 mt-1">✓ <span data-en="All OK" data-uk="Все ОК">All OK</span></div>
+                    <div class="text-slate-400 text-xs font-bold uppercase mb-2" data-en="Next Sync" data-uk="Наступний старт">Next Sync</div>
+                    <div class="text-3xl font-bold text-slate-800">14:00</div>
+                    <div class="text-xs text-orange-500 mt-1" data-en="in 34 mins" data-uk="через 34 хв">in 34 mins</div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-lg mb-4 text-slate-800 flex items-center gap-2">
-                        <span class="w-3 h-3 bg-orange-400 rounded-full"></span>
-                        <span data-en="ADS API Schedule (Kyiv)" data-uk="ADS API Розклад (Київ)">ADS API Schedule (Kyiv)</span>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 lg:col-span-2">
+                    <h3 class="font-bold text-lg mb-4 text-slate-800 flex justify-between">
+                        <span data-en="System Health & Resources" data-uk="Здоров'я системи та ресурси">System Health & Resources</span>
+                        <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 text-xs">Healthy</span>
                     </h3>
-                    <div class="space-y-2">
-                        <div class="schedule-item flex items-center justify-between p-3 bg-slate-50 rounded-lg transition-all">
-                            <div class="flex items-center gap-3"><span class="text-xl">🌙</span><div><div class="font-medium">02:00</div><div class="text-xs text-slate-500" data-en="Deep Sync" data-uk="Глибока синхронізація">Deep Sync</div></div></div>
-                            <span class="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-medium">30 <span data-en="days" data-uk="днів">days</span></span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-5">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">CPU Load (Worker Nodes)</span><span class="font-bold">12%</span></div>
+                                <div class="w-full bg-slate-100 rounded-full h-2.5"><div class="bg-emerald-500 h-2.5 rounded-full transition-all duration-1000" style="width: 12%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">RAM Usage</span><span class="font-bold">240MB / 1GB</span></div>
+                                <div class="w-full bg-slate-100 rounded-full h-2.5"><div class="bg-blue-500 h-2.5 rounded-full transition-all duration-1000" style="width: 24%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">Disk Space (Logs & Cache)</span><span class="font-bold">45MB</span></div>
+                                <div class="w-full bg-slate-100 rounded-full h-2.5"><div class="bg-purple-500 h-2.5 rounded-full transition-all duration-1000" style="width: 5%"></div></div>
+                            </div>
                         </div>
-                        <div class="schedule-item flex items-center justify-between p-3 bg-slate-50 rounded-lg transition-all">
-                            <div class="flex items-center gap-3"><span class="text-xl">☀️</span><div><div class="font-medium">06:00, 10:00, 14:00, 18:00</div><div class="text-xs text-slate-500" data-en="Quick Sync" data-uk="Швидка синхронізація">Quick Sync</div></div></div>
-                            <span class="px-2 py-1 bg-slate-200 text-slate-700 text-xs rounded-full font-medium">7 <span data-en="days" data-uk="днів">days</span></span>
+                        
+                        <div class="grid grid-rows-2 gap-4">
+                            <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                <div class="text-[10px] text-slate-500 uppercase font-bold mb-2">PostgreSQL Connection Pool</div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> <span class="text-sm font-semibold">Active</span></div>
+                                    <span class="font-mono font-bold text-slate-700">3 / 20</span>
+                                </div>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                <div class="text-[10px] text-slate-500 uppercase font-bold mb-2">Circuit Breaker State</div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> <span class="text-sm font-semibold">Amazon API OK</span></div>
+                                    <span class="text-xs text-slate-400">0 fails (24h)</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-lg mb-4 text-slate-800 flex items-center gap-2">
-                        <span class="w-3 h-3 bg-emerald-400 rounded-full"></span>
-                        <span data-en="SP-API Schedule (Kyiv)" data-uk="SP-API Розклад (Київ)">SP-API Schedule (Kyiv)</span>
-                    </h3>
-                    <div class="space-y-2">
-                        <div class="schedule-item flex items-center justify-between p-3 bg-slate-50 rounded-lg transition-all">
-                            <div class="flex items-center gap-3"><span class="text-xl">📊</span><div><div class="font-medium">03:00</div><div class="text-xs text-slate-500">Settlements, Fees, Listings</div></div></div>
-                            <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full font-medium">daily</span>
+                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Alert Logic" data-uk="Логіка Сповіщень">Alert Logic</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center p-3 bg-slate-50 rounded-lg border-l-4 border-slate-400">
+                            <div class="text-xl mr-3">🔇</div>
+                            <div>
+                                <div class="font-bold text-sm" data-en="All OK" data-uk="Все ОК">All OK</div>
+                                <div class="text-xs text-slate-500" data-en="Silence (No spam)" data-uk="Тиша (Без спаму)">Silence (No spam)</div>
+                            </div>
                         </div>
-                        <div class="schedule-item flex items-center justify-between p-3 bg-slate-50 rounded-lg transition-all">
-                            <div class="flex items-center gap-3"><span class="text-xl">🔄</span><div><div class="font-medium">04:00, 08:00, 12:00, 16:00, 20:00</div><div class="text-xs text-slate-500">Inventory, Orders</div></div></div>
-                            <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">4h</span>
+                        <div class="flex items-center p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
+                            <div class="text-xl mr-3">⚠️</div>
+                            <div>
+                                <div class="font-bold text-sm">Warning</div>
+                                <div class="text-xs text-yellow-700 font-mono font-bold">Data &lt; 60%</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-red-50 rounded-lg border-l-4 border-red-500">
+                            <div class="text-xl mr-3">🔴</div>
+                            <div>
+                                <div class="font-bold text-sm">Critical</div>
+                                <div class="text-xs text-red-700 font-mono font-bold">Data &lt; 30%</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-red-100 rounded-lg border-l-4 border-red-800">
+                            <div class="text-xl mr-3">❌</div>
+                            <div>
+                                <div class="font-bold text-sm">Error</div>
+                                <div class="text-xs text-red-900" data-en="System/Network Failure" data-uk="Збій системи/мережі">System/Network Failure</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="System Efficiency" data-uk="Ефективність системи">System Efficiency</h3>
-                <div class="chart-container"><canvas id="efficiencyChart"></canvas></div>
-            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 lg:col-span-1">
+                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Live Event Log" data-uk="Живий лог подій">Live Event Log</h3>
+                    <div class="space-y-4 overflow-y-auto max-h-64 custom-scroll pr-2">
+                        <div class="flex gap-3 items-start relative pb-4 border-l border-slate-200 pl-4 last:border-0 last:pb-0">
+                            <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-slate-300"></div>
+                            <div class="text-xs text-slate-400 font-mono mt-0.5">13:25</div>
+                            <div>
+                                <div class="text-sm font-bold text-slate-700">Bot Command</div>
+                                <div class="text-xs text-slate-500">User checked /status</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-start relative pb-4 border-l border-slate-200 pl-4 last:border-0 last:pb-0">
+                            <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+                            <div class="text-xs text-slate-400 font-mono mt-0.5">12:15</div>
+                            <div>
+                                <div class="text-sm font-bold text-emerald-600">Inventory Sync</div>
+                                <div class="text-xs text-slate-500">Updated 1,500 SKUs successfully</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-start relative pb-4 border-l border-slate-200 pl-4 last:border-0 last:pb-0">
+                            <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-blue-400"></div>
+                            <div class="text-xs text-slate-400 font-mono mt-0.5">10:45</div>
+                            <div>
+                                <div class="text-sm font-bold text-blue-600">ADS Quick Sync</div>
+                                <div class="text-xs text-slate-500">SP, SB, SD updated (7 days)</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-start relative pb-4 border-l border-slate-200 pl-4 last:border-0 last:pb-0">
+                            <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+                            <div class="text-xs text-slate-400 font-mono mt-0.5">09:00</div>
+                            <div>
+                                <div class="text-sm font-bold text-yellow-600">Auto-Fix 400</div>
+                                <div class="text-xs text-slate-500">Removed deprecated column 'attributed_sales_1d'</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Telegram Preview on Dashboard -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                <h3 class="font-bold text-lg mb-4 text-slate-800 flex items-center gap-2">
-                    <i class="fa-brands fa-telegram text-blue-500"></i>
-                    <span data-en="Notification Examples" data-uk="Приклади сповіщень">Notification Examples</span>
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="p-4 bg-slate-50 rounded-lg text-center"><div class="text-2xl mb-2">🔇</div><div class="font-bold text-sm" data-en="All OK" data-uk="Все ОК">All OK</div><div class="text-xs text-slate-500" data-en="Silence" data-uk="Тиша">Silence</div></div>
-                    <div class="p-4 bg-yellow-50 rounded-lg text-center"><div class="text-2xl mb-2">⚠️</div><div class="font-bold text-sm">Warning</div><div class="text-xs text-slate-500">Data &lt; 60%</div></div>
-                    <div class="p-4 bg-red-50 rounded-lg text-center"><div class="text-2xl mb-2">🔴</div><div class="font-bold text-sm">Critical</div><div class="text-xs text-slate-500">Data &lt; 30%</div></div>
-                    <div class="p-4 bg-red-50 rounded-lg text-center"><div class="text-2xl mb-2">❌</div><div class="font-bold text-sm">Error</div><div class="text-xs text-slate-500" data-en="System failure" data-uk="Збій системи">System failure</div></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 lg:col-span-2">
+                     <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Execution Schedules" data-uk="Розклади виконання">Execution Schedules</h3>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-slate-50 rounded-lg">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="w-2 h-2 rounded-full bg-orange-400"></span>
+                                <span class="font-bold text-slate-700">Amazon Ads</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm"><span class="text-slate-500">02:00</span><span class="font-medium">Deep Sync (30d)</span></div>
+                                <div class="flex justify-between text-sm"><span class="text-slate-500">06,10,14,18</span><span class="font-medium">Quick Sync (7d)</span></div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-lg">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                <span class="font-bold text-slate-700">SP-API</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm"><span class="text-slate-500">03:00</span><span class="font-medium">Settlements, Fees</span></div>
+                                <div class="flex justify-between text-sm"><span class="text-slate-500">05:00</span><span class="font-medium">All Orders, Finance</span></div>
+                                <div class="flex justify-between text-sm"><span class="text-slate-500">Every 4h</span><span class="font-medium">Inventory</span></div>
+                            </div>
+                        </div>
+                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. EXECUTION -->
         <div id="view-execution" class="hidden space-y-6">
             <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-xl shadow-lg text-white">
                 <div class="flex items-center justify-between mb-4">
@@ -168,7 +264,7 @@
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="bg-white bg-opacity-20 rounded-lg p-3"><div class="text-2xl font-bold">71.7K</div><div class="text-xs text-blue-100">Rows ADS</div></div>
-                    <div class="bg-white bg-opacity-20 rounded-lg p-3"><div class="text-2xl font-bold">6K</div><div class="text-xs text-blue-100">Rows SP-API</div></div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3"><div class="text-2xl font-bold">12K</div><div class="text-xs text-blue-100">Rows SP-API</div></div>
                     <div class="bg-white bg-opacity-20 rounded-lg p-3"><div class="text-2xl font-bold">3/3</div><div class="text-xs text-blue-100">ADS Loaders</div></div>
                     <div class="bg-white bg-opacity-20 rounded-lg p-3"><div class="text-2xl font-bold">100%</div><div class="text-xs text-blue-100">Success</div></div>
                 </div>
@@ -187,53 +283,48 @@
                 <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="SP-API Reports" data-uk="SP-API Звіти">SP-API Reports</h3>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg"><span class="text-sm font-medium">fba_inventory</span><span class="text-emerald-600 font-bold text-xs float-right">✅ 1,500</span></div>
-                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg"><span class="text-sm font-medium">orders_by_date</span><span class="text-emerald-600 font-bold text-xs float-right">✅ 3,200</span></div>
+                    <div class="p-3 bg-purple-50 border border-purple-200 rounded-lg"><span class="text-sm font-medium">all_orders</span><span class="text-purple-600 font-bold text-xs float-right">✅ 3,200</span></div>
                     <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg"><span class="text-sm font-medium">settlements</span><span class="text-emerald-600 font-bold text-xs float-right">✅ 850</span></div>
                     <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg"><span class="text-sm font-medium">fba_fees</span><span class="text-emerald-600 font-bold text-xs float-right">✅ 490</span></div>
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg"><span class="text-sm font-medium text-slate-500">storage_fees</span><span class="text-slate-400 font-bold text-xs float-right">⚪ 0</span></div>
+                    <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg"><span class="text-sm font-medium">transactions</span><span class="text-yellow-600 font-bold text-xs float-right">✅ 200</span></div>
                     <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg"><span class="text-sm font-medium">merchant_listings</span><span class="text-emerald-600 font-bold text-xs float-right">✅ 450</span></div>
-                </div>
-            </div>
-
-            <!-- Telegram Examples in Execution -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                <h3 class="font-bold text-lg mb-4 text-slate-800 flex items-center gap-2"><i class="fa-brands fa-telegram text-blue-500"></i> <span data-en="Telegram Alerts" data-uk="Telegram сповіщення">Telegram Alerts</span></h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div><div class="text-xs text-emerald-600 uppercase mb-2">✅ Success</div><div class="telegram-msg text-sm text-white"><div class="font-bold mb-1">✅ ADS LOADER</div><div class="text-slate-400 text-xs mb-2">📅 7д | ⏱️ 45хв</div><div class="text-slate-300 text-xs">📦 SP: ✅ 68,300<br>🧲 SB: ✅ 1,800<br>🎯 SD: ✅ 1,600</div><div class="mt-2 pt-2 border-t border-slate-700 text-xs text-slate-400">💾 71,700 | ⏳ 14:00</div></div></div>
-                    <div><div class="text-xs text-yellow-600 uppercase mb-2">⚠️ Warning</div><div class="telegram-msg text-sm text-white"><div class="font-bold text-yellow-400 mb-2">⚠️ DATA WARNING</div><div class="text-slate-300 text-xs">📊 ads_sp_campaign<br>🔢 45,000 (норма: 68,000)<br>📉 66%</div></div></div>
-                    <div><div class="text-xs text-red-600 uppercase mb-2">❌ Error</div><div class="telegram-msg text-sm text-white"><div class="font-bold text-red-400 mb-2">❌ SP-API FAILED</div><div class="text-slate-300 text-xs">ℹ️ Token Error: LWA expired</div></div></div>
+                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg"><span class="text-sm font-medium">shipments</span><span class="text-blue-600 font-bold text-xs float-right">✅ 80</span></div>
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg"><span class="text-sm font-medium">inventory_health</span><span class="text-emerald-600 font-bold text-xs float-right">✅ 1,100</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- 3. ARCHITECTURE -->
         <div id="view-architecture" class="hidden space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                     <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Project Structure" data-uk="Структура проекту">Project Structure</h3>
-                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm text-slate-300 overflow-x-auto">
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs text-slate-300 overflow-x-auto">
 <pre><span class="text-blue-400">project/</span>
 ├── <span class="text-yellow-400">📁 Config</span>
-│   ├── .env
-│   ├── telegram_subscribers.json <span class="text-emerald-400">NEW</span>
-│   └── circuit_state.json
+│   ├── .env                              <span class="text-slate-500"># Credentials</span>
+│   ├── telegram_subscribers.json         <span class="text-slate-500"># User list</span>
+│   └── circuit_state.json                <span class="text-slate-500"># Circuit Breaker state</span>
 │
 ├── <span class="text-purple-400">📁 Core</span>
-│   ├── <span class="text-white font-bold">run_forever.py</span> <span class="text-emerald-400">← Unified</span>
+│   ├── <span class="text-white font-bold">run_forever.py v2.2 ✅</span>
 │   ├── master_ads_loader_v4.py
 │   ├── base_loader.py
 │   ├── circuit_breaker.py
-│   └── <span class="text-white font-bold">telegram_notifier.py</span> <span class="text-emerald-400">v3.1</span>
+│   └── <span class="text-white font-bold">telegram_notifier.py v3.5 ✅</span>       <span class="text-slate-500"># New notification logic</span>
 │
 ├── <span class="text-orange-400">📁 Ads Workers</span>
 │   ├── sp_loader_4h_senior.py
 │   ├── sb_loader_4h_senior.py
 │   └── sd_loader_4h_senior.py
 │
-└── <span class="text-emerald-400">📁 SPAPI_Workers</span> <span class="text-emerald-400">NEW</span>
+└── <span class="text-emerald-400">📁 SPAPI_Workers</span>
     ├── spapi_base.py
     ├── spapi_config.py
-    └── spapi_loader.py</pre>
+    ├── spapi_loader.py                   <span class="text-slate-500"># Standard reports</span>
+    ├── inventory_health_loader.py        <span class="text-slate-500"># Health metrics</span>
+    ├── transactions_loader.py            <span class="text-slate-500"># Finance</span>
+    ├── shipments_fulfilled_loader.py     <span class="text-slate-500"># Logistics</span>
+    └── <span class="text-white font-bold">all_orders_loader.py v3.1 ✅</span></pre>
                     </div>
                 </div>
 
@@ -243,7 +334,7 @@
                         <div class="flex items-center gap-4"><div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 font-bold">1</div><div><div class="font-bold">run_forever.py</div><div class="text-xs text-slate-500" data-en="Scheduler + Telegram Bot" data-uk="Планувальник + Telegram Bot">Scheduler + Telegram Bot</div></div></div>
                         <div class="ml-6 border-l-2 border-slate-200 h-4"></div>
                         <div class="flex items-center gap-4"><div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600 font-bold">2a</div><div><div class="font-bold">master_ads_loader_v4.py</div><div class="text-xs text-slate-500">SP, SB, SD (parallel)</div></div></div>
-                        <div class="flex items-center gap-4"><div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 font-bold">2b</div><div><div class="font-bold">spapi_loader.py</div><div class="text-xs text-slate-500">Inventory, Orders, Settlements</div></div></div>
+                        <div class="flex items-center gap-4"><div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 font-bold">2b</div><div><div class="font-bold">SPAPI Workers</div><div class="text-xs text-slate-500">All Orders, Inventory, Finance</div></div></div>
                         <div class="ml-6 border-l-2 border-slate-200 h-4"></div>
                         <div class="flex items-center gap-4"><div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 font-bold">3</div><div><div class="font-bold">PostgreSQL</div><div class="text-xs text-slate-500">UPSERT + Schema Evolution</div></div></div>
                         <div class="ml-6 border-l-2 border-slate-200 h-4"></div>
@@ -251,7 +342,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                 <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="API Ecosystem" data-uk="Екосистема API">API Ecosystem</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -259,175 +350,69 @@
                         <div class="font-bold text-slate-800">Amazon Ads API</div>
                         <div class="text-xs text-slate-500 font-mono mt-1">advertising-api.amazon.com</div>
                         <div class="flex gap-2 mt-3"><span class="px-2 py-1 bg-white text-xs rounded">SP</span><span class="px-2 py-1 bg-white text-xs rounded">SB</span><span class="px-2 py-1 bg-white text-xs rounded">SD</span></div>
-                        <p class="text-sm text-slate-600 mt-3" data-en="Impressions, Clicks, ACOS, ROAS" data-uk="Покази, Кліки, ACOS, ROAS">Impressions, Clicks, ACOS, ROAS</p>
                     </div>
                     <div class="p-4 border-l-4 border-emerald-400 bg-emerald-50 rounded-r-lg">
                         <div class="font-bold text-slate-800">Selling Partner API</div>
                         <div class="text-xs text-slate-500 font-mono mt-1">sellingpartnerapi-na.amazon.com</div>
-                        <div class="flex gap-2 mt-3"><span class="px-2 py-1 bg-white text-xs rounded">Inventory</span><span class="px-2 py-1 bg-white text-xs rounded">Orders</span><span class="px-2 py-1 bg-white text-xs rounded">Finance</span></div>
-                        <p class="text-sm text-slate-600 mt-3" data-en="Inventory, Orders, Settlements, Fees" data-uk="Інвентар, Замовлення, Розрахунки, Комісії">Inventory, Orders, Settlements, Fees</p>
+                        <div class="flex gap-2 mt-3"><span class="px-2 py-1 bg-white text-xs rounded">Orders</span><span class="px-2 py-1 bg-white text-xs rounded">Finance</span><span class="px-2 py-1 bg-white text-xs rounded">Inventory</span></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 4. FEATURES -->
         <div id="view-features" class="hidden space-y-6">
-            <!-- Radar Chart -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                 <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="System Capabilities" data-uk="Можливості системи">System Capabilities</h3>
                 <div class="chart-container"><canvas id="featuresChart"></canvas></div>
             </div>
 
-            <!-- Features Matrix -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                <h3 class="font-bold text-lg mb-6 text-slate-800" data-en="Features Matrix" data-uk="Матриця можливостей">Features Matrix</h3>
-                
+                <h3 class="font-bold text-lg mb-6 text-slate-800" data-en="Features Matrix (Complete)" data-uk="Матриця можливостей (Повна)">Features Matrix (Complete)</h3>
                 <div class="space-y-4">
-                    <!-- Anti-Zombie -->
                     <div class="p-5 border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-white rounded-r-xl relative">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">🧟</span>
-                                <div class="font-bold text-slate-800 text-lg">Anti-Zombie</div>
-                            </div>
-                            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full font-medium" data-en="Reliability" data-uk="Надійність">Reliability</span>
-                        </div>
-                        <p class="text-sm text-slate-600 mt-3 ml-11" data-en="Distinguishes between 'slow' and 'dead'. If API returns None 10 times in a row (10 min), the worker self-terminates, allowing Master to restart it. Prevents zombie processes that consume resources without doing useful work." data-uk="Розрізняє 'повільний' та 'мертвий'. Якщо API повертає None 10 разів поспіль (10 хв), воркер само-завершується, дозволяючи Master перезапустити його. Запобігає зомбі-процесам, що споживають ресурси без корисної роботи.">Distinguishes between 'slow' and 'dead'. If API returns None 10 times in a row (10 min), the worker self-terminates, allowing Master to restart it. Prevents zombie processes that consume resources without doing useful work.</p>
+                        <div class="flex items-start justify-between"><div class="flex items-center gap-3"><span class="text-2xl">🧟</span><div class="font-bold text-slate-800 text-lg">Anti-Zombie</div></div><span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full font-medium">Reliability</span></div>
+                        <p class="text-sm text-slate-600 mt-3 ml-11">Distinguishes between 'slow' and 'dead'. If API returns None 10 times in a row, worker self-terminates.</p>
                     </div>
-
-                    <!-- Circuit Breaker -->
                     <div class="p-5 border-l-4 border-blue-500 bg-gradient-to-r from-blue-50 to-white rounded-r-xl relative">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">⚡</span>
-                                <div class="font-bold text-slate-800 text-lg">Circuit Breaker</div>
-                            </div>
-                            <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium" data-en="Security" data-uk="Безпека">Security</span>
-                        </div>
-                        <p class="text-sm text-slate-600 mt-3 ml-11" data-en="Prevents API ban. If API fails 3 times globally, system enters 'Cooldown' state for 30 minutes before retry. Protects against rate limiting and temporary outages. State persists in circuit_state.json across restarts." data-uk="Запобігає бану API. Якщо API падає 3 рази глобально, система входить в стан 'Охолодження' на 30 хвилин перед повторною спробою. Захищає від rate limiting та тимчасових збоїв. Стан зберігається в circuit_state.json між перезапусками.">Prevents API ban. If API fails 3 times globally, system enters 'Cooldown' state for 30 minutes before retry. Protects against rate limiting and temporary outages. State persists in circuit_state.json across restarts.</p>
+                        <div class="flex items-start justify-between"><div class="flex items-center gap-3"><span class="text-2xl">⚡</span><div class="font-bold text-slate-800 text-lg">Circuit Breaker</div></div><span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">Security</span></div>
+                        <p class="text-sm text-slate-600 mt-3 ml-11">Prevents API ban. If API fails 3 times globally, system enters 'Cooldown' state for 30 minutes.</p>
                     </div>
-
-                    <!-- Auto-Fix 400 -->
                     <div class="p-5 border-l-4 border-purple-500 bg-gradient-to-r from-purple-50 to-white rounded-r-xl relative">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">🔧</span>
-                                <div class="font-bold text-slate-800 text-lg">Auto-Fix 400</div>
-                            </div>
-                            <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium" data-en="Self-Healing" data-uk="Самолікування">Self-Healing</span>
-                        </div>
-                        <p class="text-sm text-slate-600 mt-3 ml-11" data-en="Automatically handles HTTP 400 errors caused by deprecated API fields. Parses error message, identifies bad column, removes it from request, and retries. Zero manual intervention required. Logs all auto-fixes for audit." data-uk="Автоматично обробляє HTTP 400 помилки від застарілих полів API. Парсить повідомлення про помилку, визначає погану колонку, видаляє її з запиту і повторює. Нуль ручного втручання. Логує всі авто-виправлення для аудиту.">Automatically handles HTTP 400 errors caused by deprecated API fields. Parses error message, identifies bad column, removes it from request, and retries. Zero manual intervention required. Logs all auto-fixes for audit.</p>
+                        <div class="flex items-start justify-between"><div class="flex items-center gap-3"><span class="text-2xl">🔧</span><div class="font-bold text-slate-800 text-lg">Auto-Fix 400</div></div><span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">Self-Healing</span></div>
+                        <p class="text-sm text-slate-600 mt-3 ml-11">Automatically handles HTTP 400 errors caused by deprecated API fields. Removes bad columns and retries.</p>
                     </div>
-
-                    <!-- Schema Evolution -->
                     <div class="p-5 border-l-4 border-orange-500 bg-gradient-to-r from-orange-50 to-white rounded-r-xl relative">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">🧬</span>
-                                <div class="font-bold text-slate-800 text-lg">Schema Evolution</div>
-                            </div>
-                            <span class="px-3 py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-medium" data-en="Flexibility" data-uk="Гнучкість">Flexibility</span>
-                        </div>
-                        <p class="text-sm text-slate-600 mt-3 ml-11" data-en="Database adapts to API changes automatically. When Amazon adds new fields to reports, system detects them and adds columns to PostgreSQL on-the-fly. No migrations, no downtime. Column names normalized to 63 chars max." data-uk="База даних адаптується до змін API автоматично. Коли Amazon додає нові поля до звітів, система виявляє їх і додає колонки до PostgreSQL на льоту. Без міграцій, без простою. Назви колонок нормалізуються до 63 символів макс.">Database adapts to API changes automatically. When Amazon adds new fields to reports, system detects them and adds columns to PostgreSQL on-the-fly. No migrations, no downtime. Column names normalized to 63 chars max.</p>
+                        <div class="flex items-start justify-between"><div class="flex items-center gap-3"><span class="text-2xl">🧬</span><div class="font-bold text-slate-800 text-lg">Schema Evolution</div></div><span class="px-3 py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-medium">Flexibility</span></div>
+                        <p class="text-sm text-slate-600 mt-3 ml-11">Database adapts to API changes automatically. No migrations, no downtime.</p>
                     </div>
-
-                    <!-- UPSERT Deduplication -->
                     <div class="p-5 border-l-4 border-cyan-500 bg-gradient-to-r from-cyan-50 to-white rounded-r-xl relative">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">🔄</span>
-                                <div class="font-bold text-slate-800 text-lg">UPSERT Deduplication</div>
-                            </div>
-                            <span class="px-3 py-1 bg-cyan-100 text-cyan-700 text-xs rounded-full font-medium" data-en="Data Integrity" data-uk="Цілісність даних">Data Integrity</span>
-                        </div>
-                        <p class="text-sm text-slate-600 mt-3 ml-11" data-en="INSERT ... ON CONFLICT UPDATE ensures no duplicate records. Each report has a unique conflict_key (composite of date + campaign_id + ad_group_id etc). Safe to re-run any time without data corruption." data-uk="INSERT ... ON CONFLICT UPDATE гарантує відсутність дублікатів. Кожен звіт має унікальний conflict_key (композит дати + campaign_id + ad_group_id тощо). Безпечно перезапускати будь-коли без пошкодження даних.">INSERT ... ON CONFLICT UPDATE ensures no duplicate records. Each report has a unique conflict_key (composite of date + campaign_id + ad_group_id etc). Safe to re-run any time without data corruption.</p>
+                        <div class="flex items-start justify-between"><div class="flex items-center gap-3"><span class="text-2xl">🔄</span><div class="font-bold text-slate-800 text-lg">UPSERT Deduplication</div></div><span class="px-3 py-1 bg-cyan-100 text-cyan-700 text-xs rounded-full font-medium">Data Integrity</span></div>
+                        <p class="text-sm text-slate-600 mt-3 ml-11">INSERT ... ON CONFLICT UPDATE ensures no duplicate records. Safe to re-run any time.</p>
                     </div>
-
-                    <!-- Parallel Execution -->
                     <div class="p-5 border-l-4 border-pink-500 bg-gradient-to-r from-pink-50 to-white rounded-r-xl relative">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">🚀</span>
-                                <div class="font-bold text-slate-800 text-lg">Parallel Execution</div>
-                            </div>
-                            <span class="px-3 py-1 bg-pink-100 text-pink-700 text-xs rounded-full font-medium" data-en="Performance" data-uk="Продуктивність">Performance</span>
-                        </div>
-                        <p class="text-sm text-slate-600 mt-3 ml-11" data-en="SP, SB, SD loaders run simultaneously via ThreadPoolExecutor. 3x faster than sequential. Each loader is independent with own error handling. Master aggregates results and calculates total stats." data-uk="SP, SB, SD завантажувачі працюють одночасно через ThreadPoolExecutor. В 3 рази швидше ніж послідовно. Кожен завантажувач незалежний з власною обробкою помилок. Master агрегує результати і рахує загальну статистику.">SP, SB, SD loaders run simultaneously via ThreadPoolExecutor. 3x faster than sequential. Each loader is independent with own error handling. Master aggregates results and calculates total stats.</p>
+                        <div class="flex items-start justify-between"><div class="flex items-center gap-3"><span class="text-2xl">🚀</span><div class="font-bold text-slate-800 text-lg">Parallel Execution</div></div><span class="px-3 py-1 bg-pink-100 text-pink-700 text-xs rounded-full font-medium">Speed</span></div>
+                        <p class="text-sm text-slate-600 mt-3 ml-11">SP, SB, SD loaders run simultaneously. 3x faster than sequential.</p>
                     </div>
-
-                    <!-- Silent Mode -->
                     <div class="p-5 border-l-4 border-slate-500 bg-gradient-to-r from-slate-50 to-white rounded-r-xl relative">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">🔇</span>
-                                <div class="font-bold text-slate-800 text-lg">Silent Mode</div>
-                            </div>
-                            <span class="px-3 py-1 bg-slate-200 text-slate-700 text-xs rounded-full font-medium" data-en="UX" data-uk="UX">UX</span>
-                        </div>
-                        <p class="text-sm text-slate-600 mt-3 ml-11" data-en="No spam when everything works. Telegram notifications only on errors, warnings (<60% data), or critical alerts (<30% data). Success messages suppressed by default. Toggle with silent_success=False if needed." data-uk="Жодного спаму коли все працює. Telegram сповіщення тільки при помилках, попередженнях (<60% даних), або критичних алертах (<30% даних). Повідомлення про успіх приховані за замовчуванням. Перемикається через silent_success=False якщо потрібно.">No spam when everything works. Telegram notifications only on errors, warnings (&lt;60% data), or critical alerts (&lt;30% data). Success messages suppressed by default. Toggle with silent_success=False if needed.</p>
+                        <div class="flex items-start justify-between"><div class="flex items-center gap-3"><span class="text-2xl">🔇</span><div class="font-bold text-slate-800 text-lg">Silent Mode</div></div><span class="px-3 py-1 bg-slate-200 text-slate-700 text-xs rounded-full font-medium">UX</span></div>
+                        <p class="text-sm text-slate-600 mt-3 ml-11">Telegram notifications only on errors, warnings, or critical alerts. Success messages suppressed by default.</p>
                     </div>
-
-                    <!-- Data Anomaly Detection -->
                     <div class="p-5 border-l-4 border-yellow-500 bg-gradient-to-r from-yellow-50 to-white rounded-r-xl relative">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">📊</span>
-                                <div class="font-bold text-slate-800 text-lg">Data Anomaly Detection</div>
-                            </div>
-                            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full font-medium" data-en="Monitoring" data-uk="Моніторинг">Monitoring</span>
-                        </div>
-                        <p class="text-sm text-slate-600 mt-3 ml-11" data-en="Compares today's row count against 7-day average. If data is 30-60% of normal → Warning. If <30% → Critical alert. Catches Amazon API issues, campaign pauses, or sync failures early before they become problems." data-uk="Порівнює кількість рядків за сьогодні з середнім за 7 днів. Якщо дані 30-60% від норми → Попередження. Якщо <30% → Критичний алерт. Виявляє проблеми Amazon API, паузи кампаній або збої синхронізації рано, до того як вони стануть проблемами.">Compares today's row count against 7-day average. If data is 30-60% of normal → Warning. If &lt;30% → Critical alert. Catches Amazon API issues, campaign pauses, or sync failures early before they become problems.</p>
+                        <div class="flex items-start justify-between"><div class="flex items-center gap-3"><span class="text-2xl">📊</span><div class="font-bold text-slate-800 text-lg">Anomaly Detection</div></div><span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full font-medium">Monitoring</span></div>
+                        <p class="text-sm text-slate-600 mt-3 ml-11">Compares today's row count against 7-day average. Warns if data < 60%.</p>
                     </div>
-
-                    <!-- Graceful Shutdown -->
                     <div class="p-5 border-l-4 border-red-500 bg-gradient-to-r from-red-50 to-white rounded-r-xl relative">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">🛑</span>
-                                <div class="font-bold text-slate-800 text-lg">Graceful Shutdown</div>
-                            </div>
-                            <span class="px-3 py-1 bg-red-100 text-red-700 text-xs rounded-full font-medium" data-en="Safety" data-uk="Безпека">Safety</span>
-                        </div>
-                        <p class="text-sm text-slate-600 mt-3 ml-11" data-en="Handles SIGTERM/SIGINT signals properly. Completes current database transaction before exit. No corrupted data, no orphaned connections. Exit code 143 indicates clean termination. Safe for Docker, systemd, Kubernetes." data-uk="Обробляє сигнали SIGTERM/SIGINT правильно. Завершує поточну транзакцію бази даних перед виходом. Жодних пошкоджених даних, жодних осиротілих з'єднань. Exit code 143 вказує на чисте завершення. Безпечно для Docker, systemd, Kubernetes.">Handles SIGTERM/SIGINT signals properly. Completes current database transaction before exit. No corrupted data, no orphaned connections. Exit code 143 indicates clean termination. Safe for Docker, systemd, Kubernetes.</p>
+                        <div class="flex items-start justify-between"><div class="flex items-center gap-3"><span class="text-2xl">🛑</span><div class="font-bold text-slate-800 text-lg">Graceful Shutdown</div></div><span class="px-3 py-1 bg-red-100 text-red-700 text-xs rounded-full font-medium">Safety</span></div>
+                        <p class="text-sm text-slate-600 mt-3 ml-11">Handles SIGTERM/SIGINT. Completes transactions before exit. Safe for Docker.</p>
                     </div>
-
-                    <!-- Settlements Special Processing -->
                     <div class="p-5 border-l-4 border-indigo-500 bg-gradient-to-r from-indigo-50 to-white rounded-r-xl relative">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">💰</span>
-                                <div class="font-bold text-slate-800 text-lg">Settlements Processing</div>
-                            </div>
-                            <span class="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs rounded-full font-medium" data-en="Finance" data-uk="Фінанси">Finance</span>
-                        </div>
-                        <p class="text-sm text-slate-600 mt-3 ml-11" data-en="Amazon generates settlement reports every ~14 days (not on demand). System uses use_existing flag to fetch latest available. Special filter removes section headers and NULL rows. Critical for accurate financial reconciliation." data-uk="Amazon генерує звіти про розрахунки кожні ~14 днів (не на вимогу). Система використовує прапорець use_existing для отримання останнього доступного. Спеціальний фільтр видаляє заголовки секцій та NULL рядки. Критично для точної фінансової звірки.">Amazon generates settlement reports every ~14 days (not on demand). System uses use_existing flag to fetch latest available. Special filter removes section headers and NULL rows. Critical for accurate financial reconciliation.</p>
+                        <div class="flex items-start justify-between"><div class="flex items-center gap-3"><span class="text-2xl">💰</span><div class="font-bold text-slate-800 text-lg">Settlements</div></div><span class="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs rounded-full font-medium">Finance</span></div>
+                        <p class="text-sm text-slate-600 mt-3 ml-11">Special handling for 14-day settlement reports. Filters headers and NULL rows.</p>
                     </div>
-                </div>
-            </div>
-
-            <!-- Quick Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
-                    <div class="text-3xl font-bold text-emerald-600">10</div>
-                    <div class="text-xs text-slate-500 mt-1" data-en="Features" data-uk="Фішок">Features</div>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
-                    <div class="text-3xl font-bold text-blue-600">0</div>
-                    <div class="text-xs text-slate-500 mt-1" data-en="Manual Fixes/Week" data-uk="Ручних виправлень/тиждень">Manual Fixes/Week</div>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
-                    <div class="text-3xl font-bold text-purple-600">3x</div>
-                    <div class="text-xs text-slate-500 mt-1" data-en="Speed Boost" data-uk="Прискорення">Speed Boost</div>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
-                    <div class="text-3xl font-bold text-orange-600">24/7</div>
-                    <div class="text-xs text-slate-500 mt-1" data-en="Autonomous" data-uk="Автономно">Autonomous</div>
                 </div>
             </div>
         </div>
 
-        <!-- 5. LOGIC & API -->
         <div id="view-logic" class="hidden space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
@@ -439,21 +424,46 @@
                         <div class="flex items-center p-3 bg-slate-50 rounded-lg"><span class="w-10 h-10 flex items-center justify-center bg-slate-500 text-white font-mono font-bold rounded mr-3">143</span><div><div class="font-bold">SIGTERM</div><div class="text-xs text-slate-500">Graceful shutdown</div></div></div>
                     </div>
                 </div>
+
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="SP-API Reports (30+)" data-uk="SP-API Звіти (30+)">SP-API Reports (30+)</h3>
-                    <div class="grid grid-cols-2 gap-2 text-sm">
+                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Python Notification Logic (v3.5)" data-uk="Логіка сповіщень (v3.5)">Python Notification Logic (v3.5)</h3>
+                    <div class="bg-slate-900 text-slate-200 p-4 rounded-lg font-mono text-xs overflow-x-auto h-64">
+<pre><span class="code-kw">class</span> TelegramNotifier:
+    <span class="code-comment"># ... (init methods)</span>
+
+    <span class="code-kw">def</span> <span class="code-func">send_all_orders_success</span>(self, rows, elapsed, days_ok, days_total, next_run=None):
+        next_str = <span class="code-str">""</span>
+        <span class="code-kw">if</span> next_run:
+            next_str = <span class="code-str">f"\n⏳ Next: {format_next_run(next_run)}"</span>
+
+        text = <span class="code-str">f"""🛒 &lt;b&gt;ALL ORDERS&lt;/b&gt;
+✅ Orders: {rows:,}
+📅 Days: {days_ok}/{days_total}
+⏱️ {elapsed/60:.1f}min{next_str}"""</span>
+        
+        <span class="code-kw">return</span> self._send(text)</pre>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 md:col-span-2">
+                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Full Supported Report List" data-uk="Повний список звітів">Full Supported Report List</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                        <div class="p-2 bg-purple-100 border border-purple-200 rounded font-bold">🛒 all_orders <span class="text-[10px] text-purple-600">NEW</span></div>
+                        <div class="p-2 bg-emerald-50 rounded">📦 inventory_health <span class="text-[10px] text-emerald-600">NEW</span></div>
+                        <div class="p-2 bg-yellow-50 rounded">💰 financial_events <span class="text-[10px] text-yellow-600">NEW</span></div>
+                        <div class="p-2 bg-blue-50 rounded">🚚 shipments_fulfilled</div>
                         <div class="p-2 bg-emerald-50 rounded">📦 fba_inventory</div>
                         <div class="p-2 bg-emerald-50 rounded">📦 reserved_inventory</div>
                         <div class="p-2 bg-emerald-50 rounded">📦 afn_inventory</div>
                         <div class="p-2 bg-emerald-50 rounded">📦 stranded_inventory</div>
                         <div class="p-2 bg-blue-50 rounded">🛒 orders_by_date</div>
-                        <div class="p-2 bg-blue-50 rounded">🚚 fba_shipments</div>
                         <div class="p-2 bg-blue-50 rounded">↩️ fba_returns</div>
                         <div class="p-2 bg-yellow-50 rounded">💰 settlements</div>
                         <div class="p-2 bg-yellow-50 rounded">💳 fba_fees</div>
-                        <div class="p-2 bg-yellow-50 rounded">💳 storage_fees</div>
                         <div class="p-2 bg-yellow-50 rounded">💳 referral_fees</div>
+                        <div class="p-2 bg-yellow-50 rounded">💳 storage_fees</div>
                         <div class="p-2 bg-purple-50 rounded">📝 merchant_listings</div>
+                        <div class="p-2 bg-slate-50 rounded">📝 subscription_fees</div>
                     </div>
                 </div>
             </div>
@@ -485,21 +495,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const ctxEff = document.getElementById('efficiencyChart');
-            if (ctxEff) {
-                new Chart(ctxEff.getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: ['Downtime (min)', 'Manual Fixes/Week', 'Report Types'],
-                        datasets: [
-                            { label: 'Old (v3)', data: [180, 5, 10], backgroundColor: '#94a3b8', borderRadius: 6 },
-                            { label: 'New (v5)', data: [5, 0, 30], backgroundColor: '#10b981', borderRadius: 6 }
-                        ]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
-                });
-            }
-
             const ctxFeat = document.getElementById('featuresChart');
             if (ctxFeat) {
                 new Chart(ctxFeat.getContext('2d'), {
