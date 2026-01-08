@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amazon ETL System v5.7 Final</title>
+    <title>Amazon ETL System v6.0 Ultimate</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,6 +26,13 @@
         .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .pulse-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); animation: pulse-green 2s infinite; }
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
     </style>
 </head>
 <body class="text-slate-800 h-screen flex flex-col md:flex-row overflow-hidden bg-slate-50">
@@ -34,7 +41,7 @@
         <div class="p-6 border-b border-slate-800">
             <div class="flex items-center justify-between mb-2">
                 <h1 class="text-xl font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-network-wired text-blue-400"></i> ETL v5.7
+                    <i class="fa-solid fa-network-wired text-blue-400"></i> ETL v6.0
                 </h1>
                 <div class="flex gap-1">
                     <button onclick="switchLang('en')" class="lang-btn px-2 py-1 text-xs rounded bg-slate-700 hover:bg-slate-600 active" id="lang-en">EN</button>
@@ -64,14 +71,14 @@
 
         <div class="p-4 border-t border-slate-800 text-xs text-slate-500">
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span class="pulse-dot"></span>
                 <span data-en="System Active" data-uk="Система активна">System Active</span>
             </div>
             <div class="flex items-center gap-2">
                 <i class="fa-brands fa-telegram text-blue-400"></i>
                 <span>Bot v3.5 <span data-en="Active" data-uk="Активний">Active</span></span>
             </div>
-            <div class="mt-2 text-slate-600">v5.7.0 Final Release</div>
+            <div class="mt-2 text-slate-600">v6.0.0 Ultimate</div>
         </div>
     </aside>
 
@@ -80,10 +87,13 @@
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-slate-900" data-en="Unified ETL System" data-uk="Єдина ETL Система">Unified ETL System</h2>
-                <p class="text-slate-500 text-sm" data-en="Amazon Ads + SP-API (Orders/Finance) • Self-Healing" data-uk="Amazon Ads + SP-API (Orders/Finance) • Самовідновлення">Amazon Ads + SP-API (Orders/Finance) • Self-Healing</p>
+                <div class="flex items-center gap-3 mt-1">
+                    <p class="text-slate-500 text-sm" data-en="Amazon Ads + SP-API (Orders/Finance) • Self-Healing" data-uk="Amazon Ads + SP-API (Orders/Finance) • Самовідновлення">Amazon Ads + SP-API (Orders/Finance) • Self-Healing</p>
+                    <span class="bg-slate-200 text-slate-600 px-2 py-0.5 rounded text-xs font-mono"><i class="fa-regular fa-clock mr-1"></i>Server: 13:26 UTC+2</span>
+                </div>
             </div>
             <div class="flex flex-wrap gap-2">
-                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold"><i class="fa-solid fa-check mr-1"></i> <span data-en="Production" data-uk="Продакшн">Production</span></span>
+                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold"><i class="fa-solid fa-check mr-1"></i> <span data-en="Stable" data-uk="Стабільна">Stable</span></span>
                 <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold"><i class="fa-solid fa-robot mr-1"></i> <span data-en="Silent Mode" data-uk="Тихий режим">Silent Mode</span></span>
             </div>
         </header>
@@ -95,13 +105,11 @@
                     <div class="text-3xl font-bold text-slate-800">83,700</div>
                     <div class="text-xs text-emerald-600 mt-1">▲ 12% vs avg</div>
                 </div>
-                
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                     <div class="text-slate-400 text-xs font-bold uppercase mb-2" data-en="Active Reports" data-uk="Активні Звіти">Active Reports</div>
                     <div class="text-3xl font-bold text-purple-600">34+</div>
                     <div class="text-xs text-slate-500 mt-1" data-en="Report Types" data-uk="Типів звітів">Report Types</div>
                 </div>
-
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                     <div class="text-slate-400 text-xs font-bold uppercase mb-2" data-en="Success Rate" data-uk="Успішність">Success Rate</div>
                     <div class="text-3xl font-bold text-emerald-600">99.9%</div>
@@ -114,76 +122,70 @@
                 </div>
             </div>
 
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-lg text-slate-800" data-en="Manual Actions" data-uk="Ручне керування">Manual Actions</h3>
+                    <span class="text-xs text-slate-400 font-mono"><i class="fa-solid fa-lock mr-1"></i> admin</span>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button class="flex items-center justify-center gap-3 p-3 rounded-lg border border-blue-100 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:border-blue-300 transition-all active:scale-95 group">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-blue-600"><i class="fa-solid fa-play group-hover:text-blue-700"></i></div>
+                        <div class="text-left"><div class="text-xs font-bold">Force Sync</div><div class="text-[10px] opacity-75">Run now</div></div>
+                    </button>
+                    <button class="flex items-center justify-center gap-3 p-3 rounded-lg border border-purple-100 bg-purple-50 text-purple-700 hover:bg-purple-100 hover:border-purple-300 transition-all active:scale-95 group">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-purple-600"><i class="fa-solid fa-robot group-hover:animate-spin"></i></div>
+                        <div class="text-left"><div class="text-xs font-bold">Restart Bot</div><div class="text-[10px] opacity-75">Reload process</div></div>
+                    </button>
+                    <button class="flex items-center justify-center gap-3 p-3 rounded-lg border border-orange-100 bg-orange-50 text-orange-700 hover:bg-orange-100 hover:border-orange-300 transition-all active:scale-95 group">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-orange-600"><i class="fa-solid fa-pause"></i></div>
+                        <div class="text-left"><div class="text-xs font-bold">Pause System</div><div class="text-[10px] opacity-75">Maintenance</div></div>
+                    </button>
+                    <button class="flex items-center justify-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-all active:scale-95 group">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-500"><i class="fa-solid fa-bolt"></i></div>
+                        <div class="text-left"><div class="text-xs font-bold">Reset Circuit</div><div class="text-[10px] opacity-75">Clear errors</div></div>
+                    </button>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 rounded-xl shadow-lg text-white lg:col-span-1">
+                    <h3 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-lightbulb text-yellow-300"></i> <span data-en="Smart Insights" data-uk="Розумні ідеї">Smart Insights</span></h3>
+                    <div class="space-y-4">
+                        <div class="bg-white bg-opacity-20 p-3 rounded-lg backdrop-blur-sm">
+                            <div class="text-xs text-indigo-100 uppercase font-bold mb-1">Database Optimization</div>
+                            <p class="text-sm">Table <code class="bg-black bg-opacity-20 px-1 rounded">ads_sp_campaign</code> bloat is 12%. Recommended <b>VACUUM</b> execution this weekend.</p>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-3 rounded-lg backdrop-blur-sm">
+                            <div class="text-xs text-indigo-100 uppercase font-bold mb-1">API Quota</div>
+                            <p class="text-sm">Peak usage detected at <b>14:00</b> (45% of limit). Consider spreading tasks.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 lg:col-span-2">
                     <h3 class="font-bold text-lg mb-4 text-slate-800 flex justify-between">
-                        <span data-en="System Health & Resources" data-uk="Здоров'я системи та ресурси">System Health & Resources</span>
+                        <span data-en="System Health" data-uk="Здоров'я системи">System Health</span>
                         <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 text-xs">Healthy</span>
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-5">
                             <div>
-                                <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">CPU Load (Worker Nodes)</span><span class="font-bold">12%</span></div>
-                                <div class="w-full bg-slate-100 rounded-full h-2.5"><div class="bg-emerald-500 h-2.5 rounded-full transition-all duration-1000" style="width: 12%"></div></div>
+                                <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">CPU Load</span><span class="font-bold">12%</span></div>
+                                <div class="w-full bg-slate-100 rounded-full h-2.5"><div class="bg-emerald-500 h-2.5 rounded-full" style="width: 12%"></div></div>
                             </div>
                             <div>
                                 <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">RAM Usage</span><span class="font-bold">240MB / 1GB</span></div>
-                                <div class="w-full bg-slate-100 rounded-full h-2.5"><div class="bg-blue-500 h-2.5 rounded-full transition-all duration-1000" style="width: 24%"></div></div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">Disk Space (Logs & Cache)</span><span class="font-bold">45MB</span></div>
-                                <div class="w-full bg-slate-100 rounded-full h-2.5"><div class="bg-purple-500 h-2.5 rounded-full transition-all duration-1000" style="width: 5%"></div></div>
+                                <div class="w-full bg-slate-100 rounded-full h-2.5"><div class="bg-blue-500 h-2.5 rounded-full" style="width: 24%"></div></div>
                             </div>
                         </div>
-                        
                         <div class="grid grid-rows-2 gap-4">
                             <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
-                                <div class="text-[10px] text-slate-500 uppercase font-bold mb-2">PostgreSQL Connection Pool</div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> <span class="text-sm font-semibold">Active</span></div>
-                                    <span class="font-mono font-bold text-slate-700">3 / 20</span>
-                                </div>
+                                <div class="text-[10px] text-slate-500 uppercase font-bold mb-2">DB Connections</div>
+                                <div class="flex items-center justify-between"><div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> <span class="text-sm font-semibold">Active</span></div><span class="font-mono font-bold text-slate-700">3 / 20</span></div>
                             </div>
                             <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
-                                <div class="text-[10px] text-slate-500 uppercase font-bold mb-2">Circuit Breaker State</div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> <span class="text-sm font-semibold">Amazon API OK</span></div>
-                                    <span class="text-xs text-slate-400">0 fails (24h)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Alert Logic" data-uk="Логіка Сповіщень">Alert Logic</h3>
-                    <div class="space-y-3">
-                        <div class="flex items-center p-3 bg-slate-50 rounded-lg border-l-4 border-slate-400">
-                            <div class="text-xl mr-3">🔇</div>
-                            <div>
-                                <div class="font-bold text-sm" data-en="All OK" data-uk="Все ОК">All OK</div>
-                                <div class="text-xs text-slate-500" data-en="Silence (No spam)" data-uk="Тиша (Без спаму)">Silence (No spam)</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
-                            <div class="text-xl mr-3">⚠️</div>
-                            <div>
-                                <div class="font-bold text-sm">Warning</div>
-                                <div class="text-xs text-yellow-700 font-mono font-bold">Data &lt; 60%</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center p-3 bg-red-50 rounded-lg border-l-4 border-red-500">
-                            <div class="text-xl mr-3">🔴</div>
-                            <div>
-                                <div class="font-bold text-sm">Critical</div>
-                                <div class="text-xs text-red-700 font-mono font-bold">Data &lt; 30%</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center p-3 bg-red-100 rounded-lg border-l-4 border-red-800">
-                            <div class="text-xl mr-3">❌</div>
-                            <div>
-                                <div class="font-bold text-sm">Error</div>
-                                <div class="text-xs text-red-900" data-en="System/Network Failure" data-uk="Збій системи/мережі">System/Network Failure</div>
+                                <div class="text-[10px] text-slate-500 uppercase font-bold mb-2">Circuit Breaker</div>
+                                <div class="flex items-center justify-between"><div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> <span class="text-sm font-semibold">Closed (OK)</span></div><span class="text-xs text-slate-400">0 fails</span></div>
                             </div>
                         </div>
                     </div>
@@ -191,69 +193,62 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 lg:col-span-1">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 lg:col-span-2">
                     <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Live Event Log" data-uk="Живий лог подій">Live Event Log</h3>
                     <div class="space-y-4 overflow-y-auto max-h-64 custom-scroll pr-2">
                         <div class="flex gap-3 items-start relative pb-4 border-l border-slate-200 pl-4 last:border-0 last:pb-0">
-                            <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-slate-300"></div>
-                            <div class="text-xs text-slate-400 font-mono mt-0.5">13:25</div>
-                            <div>
-                                <div class="text-sm font-bold text-slate-700">Bot Command</div>
-                                <div class="text-xs text-slate-500">User checked /status</div>
-                            </div>
-                        </div>
-                        <div class="flex gap-3 items-start relative pb-4 border-l border-slate-200 pl-4 last:border-0 last:pb-0">
-                            <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-                            <div class="text-xs text-slate-400 font-mono mt-0.5">12:15</div>
-                            <div>
-                                <div class="text-sm font-bold text-emerald-600">Inventory Sync</div>
-                                <div class="text-xs text-slate-500">Updated 1,500 SKUs successfully</div>
-                            </div>
+                            <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+                            <div class="text-xs text-slate-400 font-mono mt-0.5">11:02</div>
+                            <div><div class="text-sm font-bold text-yellow-600">TRANSACTIONS</div><div class="text-xs text-slate-500">Updated: 8,222 rows (Total: 57k)</div></div>
                         </div>
                         <div class="flex gap-3 items-start relative pb-4 border-l border-slate-200 pl-4 last:border-0 last:pb-0">
                             <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-blue-400"></div>
-                            <div class="text-xs text-slate-400 font-mono mt-0.5">10:45</div>
-                            <div>
-                                <div class="text-sm font-bold text-blue-600">ADS Quick Sync</div>
-                                <div class="text-xs text-slate-500">SP, SB, SD updated (7 days)</div>
-                            </div>
+                            <div class="text-xs text-slate-400 font-mono mt-0.5">10:06</div>
+                            <div><div class="text-sm font-bold text-blue-600">ADS LOADER (7d)</div><div class="text-xs text-slate-500">SP: 63k | SB: 1.7k | SD: 1.5k</div></div>
                         </div>
                         <div class="flex gap-3 items-start relative pb-4 border-l border-slate-200 pl-4 last:border-0 last:pb-0">
-                            <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+                            <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
                             <div class="text-xs text-slate-400 font-mono mt-0.5">09:00</div>
-                            <div>
-                                <div class="text-sm font-bold text-yellow-600">Auto-Fix 400</div>
-                                <div class="text-xs text-slate-500">Removed deprecated column 'attributed_sales_1d'</div>
-                            </div>
+                            <div><div class="text-sm font-bold text-emerald-600">INVENTORY HEALTH</div><div class="text-xs text-slate-500">SKU: 588 (Snapshot: 2026-01-07)</div></div>
+                        </div>
+                        <div class="flex gap-3 items-start relative pb-4 border-l border-slate-200 pl-4 last:border-0 last:pb-0">
+                            <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-purple-400"></div>
+                            <div class="text-xs text-slate-400 font-mono mt-0.5">07:15</div>
+                            <div><div class="text-sm font-bold text-purple-600">SHIPMENTS</div><div class="text-xs text-slate-500">New Shipments: 0</div></div>
+                        </div>
+                        <div class="flex gap-3 items-start relative pb-4 border-l border-slate-200 pl-4 last:border-0 last:pb-0">
+                            <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-blue-400"></div>
+                            <div class="text-xs text-slate-400 font-mono mt-0.5">06:12</div>
+                            <div><div class="text-sm font-bold text-blue-600">ADS LOADER (7d)</div><div class="text-xs text-slate-500">Total: 79,170 rows</div></div>
+                        </div>
+                        <div class="flex gap-3 items-start relative pb-4 border-l border-slate-200 pl-4 last:border-0 last:pb-0">
+                            <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                            <div class="text-xs text-slate-400 font-mono mt-0.5">05:12</div>
+                            <div><div class="text-sm font-bold text-indigo-600">ALL ORDERS</div><div class="text-xs text-slate-500">Orders: 3,450 (30/30 days)</div></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 lg:col-span-2">
-                     <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Execution Schedules" data-uk="Розклади виконання">Execution Schedules</h3>
-                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="p-4 bg-slate-50 rounded-lg">
-                            <div class="flex items-center gap-2 mb-3">
-                                <span class="w-2 h-2 rounded-full bg-orange-400"></span>
-                                <span class="font-bold text-slate-700">Amazon Ads</span>
-                            </div>
-                            <div class="space-y-2">
-                                <div class="flex justify-between text-sm"><span class="text-slate-500">02:00</span><span class="font-medium">Deep Sync (30d)</span></div>
-                                <div class="flex justify-between text-sm"><span class="text-slate-500">06,10,14,18</span><span class="font-medium">Quick Sync (7d)</span></div>
-                            </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 lg:col-span-1">
+                    <h3 class="font-bold text-lg mb-4 text-slate-800" data-en="Alert Logic" data-uk="Логіка Сповіщень">Alert Logic</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center p-3 bg-slate-50 rounded-lg border-l-4 border-slate-400">
+                            <div class="text-xl mr-3">🔇</div>
+                            <div><div class="font-bold text-sm">All OK</div><div class="text-xs text-slate-500">Silence (No spam)</div></div>
                         </div>
-                        <div class="p-4 bg-slate-50 rounded-lg">
-                            <div class="flex items-center gap-2 mb-3">
-                                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                                <span class="font-bold text-slate-700">SP-API</span>
-                            </div>
-                            <div class="space-y-2">
-                                <div class="flex justify-between text-sm"><span class="text-slate-500">03:00</span><span class="font-medium">Settlements, Fees</span></div>
-                                <div class="flex justify-between text-sm"><span class="text-slate-500">05:00</span><span class="font-medium">All Orders, Finance</span></div>
-                                <div class="flex justify-between text-sm"><span class="text-slate-500">Every 4h</span><span class="font-medium">Inventory</span></div>
-                            </div>
+                        <div class="flex items-center p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
+                            <div class="text-xl mr-3">⚠️</div>
+                            <div><div class="font-bold text-sm">Warning</div><div class="text-xs text-yellow-700 font-mono font-bold">Data &lt; 60%</div></div>
                         </div>
-                     </div>
+                        <div class="flex items-center p-3 bg-red-50 rounded-lg border-l-4 border-red-500">
+                            <div class="text-xl mr-3">🔴</div>
+                            <div><div class="font-bold text-sm">Critical</div><div class="text-xs text-red-700 font-mono font-bold">Data &lt; 30%</div></div>
+                        </div>
+                        <div class="flex items-center p-3 bg-red-100 rounded-lg border-l-4 border-red-800">
+                            <div class="text-xl mr-3">❌</div>
+                            <div><div class="font-bold text-sm">Error</div><div class="text-xs text-red-900">System Failure</div></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
